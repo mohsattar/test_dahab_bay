@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>نظام حجوزات فندق دهب باي</title>
+<style>
+/* Self-contained icon glyphs: no external font/CDN dependency */
+.ti{font-style:normal;display:inline-block;min-width:1em;text-align:center;line-height:1;font-family:"Segoe UI Symbol","Apple Color Emoji","Noto Color Emoji",sans-serif}
+.ti-building::before{content:"🏨"}.ti-calendar::before{content:"📅"}.ti-calendar-check::before{content:"🗓"}.ti-calendar-edit::before{content:"✎"}.ti-calendar-event::before{content:"📆"}.ti-calendar-off::before{content:"⊘"}.ti-calendar-plus::before{content:"＋"}.ti-check::before{content:"✓"}.ti-clipboard-list::before{content:"☷"}.ti-door::before{content:"▣"}.ti-download::before{content:"⇩"}.ti-edit::before{content:"✎"}.ti-eye::before{content:"◉"}.ti-grid-dots::before{content:"▦"}.ti-layout-dashboard::before{content:"▥"}.ti-list::before{content:"☰"}.ti-login::before{content:"⇥"}.ti-logout::before{content:"⇤"}.ti-moon::before{content:"☾"}.ti-phone::before{content:"☎"}.ti-plane-departure::before{content:"✈"}.ti-plus::before{content:"＋"}.ti-printer::before{content:"⎙"}.ti-trash::before{content:"⌫"}.ti-user::before{content:"●"}.ti-user-check::before{content:"✓"}.ti-user-plus::before{content:"⊕"}.ti-users::before{content:"●●"}.ti-x::before{content:"×"}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Arial,sans-serif;direction:inherit;background:#f5f5f0;color:#1a1a1a;min-height:100vh}
+.header{background:#fff;border-bottom:1px solid #e0e0d8;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50}
+.logo{display:flex;align-items:center;gap:10px}
+.logo-icon{width:38px;height:38px;background:#1D9E75;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px}
+.logo-text{font-size:15px;font-weight:700;color:#111}
+.logo-sub{font-size:11px;color:#888}
+.date-badge{font-size:12px;color:#666;background:#f0f0ea;padding:6px 12px;border-radius:8px;border:1px solid #ddd}
+.nav{display:flex;gap:2px;background:#fff;border-bottom:1px solid #e0e0d8;padding:0 16px;overflow-x:auto}
+.nav-btn{padding:12px 14px;font-size:13px;color:#888;background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;white-space:nowrap;font-family:Arial,sans-serif}
+.nav-btn.active{color:#0F6E56;border-bottom-color:#1D9E75;font-weight:700}
+.nav-btn:hover:not(.active){color:#333}
+.content{padding:16px;max-width:960px;margin:0 auto}
+.page{display:none}.page.active{display:block}
+.stats-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:16px}
+@media(max-width:900px){.stats-grid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:600px){.stats-grid{grid-template-columns:repeat(2,1fr)}}
+.stat-card{background:#f0f0ea;border-radius:8px;padding:14px 16px}
+.stat-label{font-size:11px;color:#666;margin-bottom:6px}
+.stat-value{font-size:26px;font-weight:700;color:#111}
+.stat-sub{font-size:10px;color:#888;margin-top:3px}
+.card{background:#fff;border-radius:10px;border:1px solid #e0e0d8;padding:18px;margin-bottom:14px}
+.card-title{font-size:13px;font-weight:700;color:#333;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.rooms-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(68px,1fr));gap:7px}
+.room-cell{border-radius:8px;padding:10px 4px;text-align:center;cursor:pointer;border:1px solid transparent;transition:transform 0.1s;font-size:12px;font-weight:700}
+.room-cell.available{background:#EAF3DE;color:#3B6D11;border-color:#C0DD97}
+.room-cell.occupied{background:#FAECE7;color:#993C1D;border-color:#F5C4B3}
+.room-cell.checkout-today{background:#FAEEDA;color:#854F0B;border-color:#FAC775}
+.room-cell:hover{transform:scale(1.06)}
+.room-label{font-size:9px;font-weight:400;margin-top:2px;opacity:0.8}
+.legend{display:flex;gap:14px;margin-bottom:14px;flex-wrap:wrap}
+.legend-item{display:flex;align-items:center;gap:5px;font-size:11px;color:#666}
+.legend-dot{width:11px;height:11px;border-radius:3px}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:500px){.form-grid{grid-template-columns:1fr}}
+.form-group{display:flex;flex-direction:column;gap:5px}
+.form-group.full{grid-column:1/-1}
+label{font-size:11px;color:#666;font-weight:700}
+input,select,textarea{font-size:13px;border-radius:8px;padding:9px 10px;border:1px solid #ccc;background:#fff;color:#111;width:100%;font-family:Arial,sans-serif}
+input:focus,select:focus,textarea:focus{outline:none;border-color:#1D9E75}
+textarea{resize:vertical;min-height:65px}
+.btn{padding:9px 18px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;border:none;transition:all 0.15s;font-family:Arial,sans-serif;display:inline-flex;align-items:center;gap:6px}
+.btn-primary{background:#1D9E75;color:#fff}.btn-primary:hover{background:#0F6E56}
+.btn-danger{background:#FAECE7;color:#993C1D;border:1px solid #F5C4B3}.btn-danger:hover{background:#F5C4B3}
+.btn-secondary{background:#f0f0ea;color:#333;border:1px solid #ccc}.btn-secondary:hover{background:#e0e0d8}
+.btn-row{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+table{width:100%;border-collapse:collapse;font-size:12px;table-layout:fixed}
+th{padding:9px 8px;text-align:start;font-size:11px;font-weight:700;color:#666;border-bottom:1px solid #e0e0d8;background:#f8f8f4}
+td{padding:9px 8px;border-bottom:1px solid #f0f0ea;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+tr:hover td{background:#f8f8f4}
+.badge{display:inline-block;padding:3px 9px;border-radius:20px;font-size:10px;font-weight:700}
+.badge-active{background:#EAF3DE;color:#3B6D11}
+.badge-checkout{background:#FAEEDA;color:#854F0B}
+.badge-done{background:#eee;color:#666}
+.badge-group{background:#EAF0FB;color:#185FA5;cursor:pointer}
+.search-row{display:flex;gap:8px;margin-bottom:14px;align-items:center;flex-wrap:wrap}
+.search-row input{flex:1;min-width:160px}
+.alert{padding:11px 14px;border-radius:8px;font-size:12px;margin-bottom:12px;display:none}
+.alert.show{display:block}
+.alert-warning{background:#FAEEDA;color:#854F0B;border:1px solid #FAC775}
+.alert-success{background:#EAF3DE;color:#3B6D11;border:1px solid #C0DD97}
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:200;align-items:flex-start;justify-content:center;padding:16px;overflow-y:auto}
+.modal-bg.open{display:flex}
+.modal{background:#fff;border-radius:12px;border:1px solid #e0e0d8;padding:22px;width:100%;max-width:520px;margin:auto}
+.modal-title{font-size:14px;font-weight:700;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between}
+.close-btn{background:none;border:none;cursor:pointer;color:#888;font-size:20px;line-height:1;padding:2px}
+.action-btn{background:none;border:none;cursor:pointer;font-size:15px;color:#888;padding:4px 5px;border-radius:4px}
+.action-btn:hover{color:#333;background:#f0f0ea}
+.empty-state{text-align:center;padding:36px;color:#aaa;font-size:13px}
+.status-row{display:flex;align-items:center;gap:12px;padding:10px 8px;border-bottom:1px solid #f0f0ea;cursor:pointer;transition:background 0.1s}
+.status-row:hover{background:#f8f8f4}
+.status-row:last-child{border-bottom:none}
+.status-room{flex:0 0 52px;font-weight:700;font-size:13px;color:#333;text-align:center;background:#f0f0ea;border-radius:8px;padding:6px 0}
+.status-row.overdue .status-room{background:#FAECE7;color:#993C1D}
+.status-info{flex:1;min-width:0}
+.status-name{font-size:13px;font-weight:700;color:#333;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.status-sub{font-size:11px;color:#888;margin-top:2px}
+.status-dates{flex:0 0 auto;text-align:end;font-size:12px;color:#555;white-space:nowrap}
+.vacant-group{padding:12px 8px;border-bottom:1px solid #f0f0ea}
+.vacant-group:last-child{border-bottom:none}
+.vacant-group-title{font-size:13px;font-weight:700;color:#333;margin-bottom:8px}
+.vacant-rooms-tags{display:flex;flex-wrap:wrap;gap:8px}
+.vacant-room-tag{background:#E7F5EF;color:#1D9E75;border:1px solid #BEE7D6;border-radius:8px;padding:6px 12px;font-size:13px;font-weight:700;cursor:pointer;transition:background 0.1s}
+.vacant-room-tag:hover{background:#d5efe4}
+.nights-box{background:#f0f0ea;border-radius:8px;padding:9px 10px;font-size:13px;color:#666;border:1px solid #e0e0d8}
+#login-screen{display:flex;position:fixed;inset:0;background:#f5f5f0;z-index:999;align-items:center;justify-content:center;padding:16px}
+.login-box{background:#fff;border-radius:14px;border:1px solid #e0e0d8;padding:32px 28px;width:100%;max-width:380px;text-align:center}
+.login-logo{width:54px;height:54px;background:#1D9E75;border-radius:12px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:26px;margin:0 auto 12px}
+.login-title{font-size:17px;font-weight:700;color:#111;margin-bottom:4px}
+.login-sub{font-size:12px;color:#888;margin-bottom:24px}
+.login-box .form-group{text-align:start;margin-bottom:12px}
+.login-error{background:#FAECE7;color:#993C1D;border:1px solid #F5C4B3;border-radius:8px;padding:9px 12px;font-size:12px;margin-bottom:12px;display:none}
+.login-error.show{display:block}
+#app-wrapper{display:none}
+.spinner{display:inline-block;width:14px;height:14px;border:2px solid #ccc;border-top-color:#1D9E75;border-radius:50%;animation:spin 0.6s linear infinite;vertical-align:middle;margin-inline-end:6px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.lang-toggle{min-width:42px;justify-content:center;font-weight:700}
+[dir="ltr"] .form-group,[dir="ltr"] input,[dir="ltr"] select,[dir="ltr"] textarea{text-align:left}
+[dir="rtl"] .form-group,[dir="rtl"] input,[dir="rtl"] select,[dir="rtl"] textarea{text-align:right}
+.room-block{border:1px solid #e0e0d8;border-radius:10px;margin-bottom:12px;overflow:hidden}
+.room-block-header{background:#f8f8f4;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;font-weight:700;font-size:13px;cursor:pointer;user-select:none}
+.room-block-body{padding:14px 16px;border-top:1px solid #e0e0d8}
+.guest-section{background:#f8f8f4;border-radius:8px;padding:12px;margin-top:10px}
+.guest-section-title{font-size:11px;font-weight:700;color:#0F6E56;margin-bottom:10px}
+.add-room-btn{border:2px dashed #C0DD97;background:#FAFFF5;border-radius:10px;padding:14px;text-align:center;cursor:pointer;color:#0F6E56;font-weight:700;font-size:13px;margin-bottom:14px}
+.add-room-btn:hover{background:#EAF3DE}
+.resp-box{background:#EAF3DE;border-radius:8px;padding:12px;margin-bottom:14px}
+</style>
+</head>
+<body>
+
+<div id="login-screen">
+  <div class="login-box">
+    <div style="display:flex;justify-content:flex-end;margin-bottom:8px"><button type="button" class="btn btn-secondary lang-toggle" id="login-lang-toggle" data-on-click="toggleLanguage()">EN</button></div>
+    <div class="login-logo"><i class="ti ti-building"></i></div>
+    <div class="login-title">فندق دهب باي</div>
+    <div class="login-sub">Dahab Bay Hotel Reservation System</div>
+    <div class="login-error" id="login-error">اسم المستخدم أو كلمة المرور غير صحيحة</div>
+    <div class="form-group"><label>اسم المستخدم</label><input type="text" id="login-username" autocomplete="username"></div>
+    <div class="form-group" style="margin-top:10px"><label>كلمة المرور</label><input type="password" id="login-password" autocomplete="current-password" data-on-keydown="if(event.key==='Enter')doLogin()"></div>
+    <button class="btn btn-primary" style="width:100%;justify-content:center;margin-top:16px" id="login-btn" data-on-click="doLogin()"><i class="ti ti-login"></i> دخول</button>
+  </div>
+</div>
+
+<div id="app-wrapper">
+<div class="header">
+  <div class="logo">
+    <div class="logo-icon"><i class="ti ti-building"></i></div>
+    <div><div class="logo-text">فندق دهب باي — نظام الحجوزات</div><div class="logo-sub">Dahab Bay Hotel Reservation System</div></div>
+  </div>
+  <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+    <button type="button" class="btn btn-secondary lang-toggle" id="header-lang-toggle" data-on-click="toggleLanguage()">EN</button>
+    <div class="date-badge" id="current-date"></div>
+    <div id="user-badge" style="font-size:12px;font-weight:700;padding:6px 12px;border-radius:8px"></div>
+    <button class="btn btn-secondary" style="padding:6px 12px;font-size:12px" data-on-click="doLogout()"><i class="ti ti-logout"></i> خروج</button>
+  </div>
+</div>
+<nav class="nav">
+  <button class="nav-btn active" data-on-click="showPage('dashboard')"><i class="ti ti-layout-dashboard"></i> لوحة التحكم</button>
+  <button class="nav-btn" data-on-click="showPage('new-booking')"><i class="ti ti-plus"></i> حجز جديد</button>
+  <button class="nav-btn" data-on-click="showPage('bookings')"><i class="ti ti-list"></i> قائمة الحجوزات</button>
+  <button class="nav-btn" data-on-click="showPage('rooms')"><i class="ti ti-grid-dots"></i> خريطة الغرف</button>
+  <button class="nav-btn" data-on-click="showPage('status')"><i class="ti ti-clipboard-list"></i> حالة الفندق</button>
+  <button class="nav-btn" data-on-click="showPage('trips')"><i class="ti ti-plane-departure"></i> الرحلات</button>
+  <button class="nav-btn" id="nav-users" style="display:none" data-on-click="showPage('users')"><i class="ti ti-users"></i> المستخدمون</button>
+</nav>
+<div class="content">
+
+<div class="page active" id="page-dashboard">
+  <div id="checkout-alert" class="alert alert-warning"></div>
+  <div class="stats-grid">
+    <div class="stat-card"><div class="stat-label">إجمالي الغرف</div><div class="stat-value">40</div><div class="stat-sub">1–10 و 101–131</div></div>
+    <div class="stat-card"><div class="stat-label">مشغولة الآن</div><div class="stat-value" id="stat-occupied" style="color:#993C1D">—</div><div class="stat-sub">حجز نشط</div></div>
+    <div class="stat-card"><div class="stat-label">متاحة</div><div class="stat-value" id="stat-available" style="color:#3B6D11">—</div><div class="stat-sub">غرفة فارغة</div></div>
+    <div class="stat-card"><div class="stat-label">مغادرة اليوم</div><div class="stat-value" id="stat-checkout" style="color:#854F0B">—</div><div class="stat-sub">يجب التسوية</div></div>
+    <div class="stat-card"><div class="stat-label">إجمالي النزلاء الآن</div><div class="stat-value" id="stat-guests" style="color:#185FA5">—</div><div class="stat-sub">في كل الغرف المشغولة</div></div>
+  </div>
+  <div class="card"><div class="card-title"><i class="ti ti-calendar-check"></i> وصول اليوم</div><div id="checkin-today-list"><div class="empty-state">جارٍ التحميل...</div></div></div>
+  <div class="card"><div class="card-title"><i class="ti ti-logout"></i> مغادرة اليوم</div><div id="checkout-today-list"><div class="empty-state">جارٍ التحميل...</div></div></div>
+</div>
+
+<div class="page" id="page-new-booking">
+  <div class="card">
+    <div class="card-title"><i class="ti ti-calendar-plus"></i> حجز جديد</div>
+    <div id="booking-error" class="alert alert-warning"></div>
+    <div id="booking-success" class="alert alert-success"></div>
+    <div style="display:flex;gap:8px;margin-bottom:12px">
+      <button type="button" id="mode-dates-btn" data-on-click="setDateMode('dates')" class="btn btn-primary" style="font-size:12px;padding:6px 14px"><i class="ti ti-calendar"></i> تاريخ وصول / مغادرة</button>
+      <button type="button" id="mode-nights-btn" data-on-click="setDateMode('nights')" class="btn btn-secondary" style="font-size:12px;padding:6px 14px"><i class="ti ti-moon"></i> تاريخ وصول + عدد الليالي</button>
+    </div>
+    <div class="form-grid" style="margin-bottom:14px">
+      <div class="form-group"><label>تاريخ الوصول *</label><input type="date" id="f-checkin" data-on-change="onDatesChange()"></div>
+      <div class="form-group" id="f-checkout-group"><label>تاريخ المغادرة *</label><input type="date" id="f-checkout" data-on-change="onDatesChange()"></div>
+      <div class="form-group" id="f-nights-input-group" style="display:none"><label>عدد الليالي *</label><input type="number" id="f-nights-input" min="1" placeholder="عدد الليالي" data-on-input="onNightsInput()"></div>
+      <div class="form-group"><label>إجمالي الليالي</label><div class="nights-box" id="nights-display" style="color:#888">اختر التواريخ</div></div>
+      <div class="form-group"><label>المبلغ الإجمالي (جنيه)</label><input type="number" id="f-amount" placeholder="0" min="0"></div>
+      <div class="form-group full"><label>ملاحظات</label><textarea id="f-notes" placeholder="أي ملاحظات إضافية..."></textarea></div>
+    </div>
+    <div class="resp-box">
+      <div style="font-size:12px;font-weight:700;color:#0F6E56;margin-bottom:10px"><i class="ti ti-user-check"></i> المسؤول عن الحجز</div>
+      <div class="form-group" style="margin-bottom:10px">
+        <label>نوع المسؤول</label>
+        <select id="f-resp-type" data-on-change="onRespTypeChange()">
+          <option value="guest">نزيل الغرفة الأولى</option>
+          <option value="external">مسؤول خارجي (مندوب / شركة سياحة)</option>
+        </select>
+      </div>
+      <div id="f-external-resp" style="display:none">
+        <div class="form-grid">
+          <div class="form-group"><label>الاسم الكامل *</label><input type="text" id="f-resp-name" placeholder="اسم المسؤول"></div>
+          <div class="form-group"><label>الجنسية</label><input type="text" id="f-resp-nationality" placeholder="مصري، سعودي..."></div>
+          <div class="form-group"><label>نوع الوثيقة</label><select id="f-resp-idtype"><option value="national">بطاقة قومية</option><option value="passport">باسبورت</option></select></div>
+          <div class="form-group"><label>رقم الوثيقة</label><input type="text" id="f-resp-idnumber"></div>
+          <div class="form-group full"><label>مكان الإقامة / الشركة</label><input type="text" id="f-resp-address"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="rooms-list"></div>
+  <div class="add-room-btn" data-on-click="addRoomRow()"><i class="ti ti-plus"></i> إضافة غرفة</div>
+  <div class="card" style="padding:14px 18px">
+    <div class="btn-row" style="margin-top:0">
+      <button class="btn btn-primary" id="add-booking-btn" data-on-click="addBooking()"><i class="ti ti-check"></i> تأكيد الحجز</button>
+      <button class="btn btn-secondary" data-on-click="clearForm()"><i class="ti ti-x"></i> مسح</button>
+    </div>
+  </div>
+</div>
+
+<div class="page" id="page-bookings">
+  <div class="card">
+    <div class="search-row">
+      <input type="text" id="search-input" placeholder="بحث بالاسم أو رقم الغرفة أو الهاتف..." data-on-input="renderBookings()">
+      <select id="filter-status" data-on-change="renderBookings()" style="width:140px">
+        <option value="">كل الحالات</option>
+        <option value="active">نشط</option>
+        <option value="done">منتهي</option>
+      </select>
+      <button class="btn btn-secondary" id="export-excel-btn" data-on-click="exportExcel()"><i class="ti ti-download"></i> تصدير Excel</button>
+    </div>
+    <div style="overflow-x:auto">
+      <table>
+        <thead><tr>
+          <th style="width:65px">الغرفة</th>
+          <th style="width:130px">النزيل</th>
+          <th style="width:88px">الوصول</th>
+          <th style="width:88px">المغادرة</th>
+          <th style="width:45px">ليالي</th>
+          <th style="width:80px">المبلغ</th>
+          <th style="width:90px">الحالة</th>
+          <th style="width:120px">إجراء</th>
+        </tr></thead>
+        <tbody id="bookings-tbody"></tbody>
+      </table>
+      <div id="no-bookings" class="empty-state" style="display:none">لا توجد حجوزات</div>
+    </div>
+  </div>
+</div>
+
+<div class="page" id="page-rooms">
+  <div class="card">
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot" style="background:#EAF3DE;border:1px solid #C0DD97"></div>متاحة</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#FAECE7;border:1px solid #F5C4B3"></div>مشغولة</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#FAEEDA;border:1px solid #FAC775"></div>مغادرة اليوم</div>
+    </div>
+    <div class="card-title"><i class="ti ti-door"></i> الطابق الأرضي (1–10)</div>
+    <div class="rooms-grid" id="grid-ground"></div>
+    <div class="card-title" style="margin-top:16px"><i class="ti ti-door"></i> الطابق الأول (101–131)</div>
+    <div class="rooms-grid" id="grid-first"></div>
+  </div>
+</div>
+
+<div class="page" id="page-status">
+  <div class="card">
+    <div class="card-title"><i class="ti ti-door"></i> الغرف الشاغرة الآن (<span id="status-vacant-count">0</span>)</div>
+    <div id="status-vacant-list"><div class="empty-state">جارٍ التحميل...</div></div>
+  </div>
+  <div class="card">
+    <div class="card-title"><i class="ti ti-door"></i> الغرف المشغولة حاليًا (<span id="status-occupied-count">0</span>)</div>
+    <div id="status-occupied-list"><div class="empty-state">جارٍ التحميل...</div></div>
+  </div>
+  <div class="card">
+    <div class="card-title"><i class="ti ti-calendar-event"></i> حجوزات قادمة — لسه ما وصلتش (<span id="status-upcoming-count">0</span>)</div>
+    <div id="status-upcoming-list"><div class="empty-state">جارٍ التحميل...</div></div>
+  </div>
+</div>
+
+<div class="page" id="page-trips">
+  <div class="card">
+    <div class="card-title"><i class="ti ti-plane-departure"></i> الرحلات الخارجية</div>
+    <div class="search-row">
+      <select id="trips-room-filter" data-on-change="renderTrips()" style="width:180px">
+        <option value="">كل الغرف</option>
+      </select>
+      <select id="trips-status-filter" data-on-change="renderTrips()" style="width:160px">
+        <option value="">كل الحجوزات</option>
+        <option value="active">حجوزات نشطة</option>
+        <option value="done">حجوزات منتهية</option>
+      </select>
+      <div style="margin-inline-start:auto;font-size:13px;font-weight:700;color:#854F0B">الإجمالي: <span id="trips-total">0</span> ج</div>
+    </div>
+    <div style="overflow-x:auto">
+      <table>
+        <thead><tr>
+          <th style="width:65px">الغرفة</th>
+          <th style="width:130px">النزيل</th>
+          <th>اسم الرحلة</th>
+          <th style="width:100px">التاريخ</th>
+          <th style="width:90px">السعر</th>
+        </tr></thead>
+        <tbody id="trips-tbody"></tbody>
+      </table>
+      <div id="no-trips" class="empty-state" style="display:none">لا توجد رحلات مسجلة</div>
+    </div>
+  </div>
+</div>
+
+<div class="page" id="page-users">
+  <div class="card">
+    <div class="card-title"><i class="ti ti-users"></i> إدارة المستخدمين</div>
+    <div id="users-list"></div>
+  </div>
+  <div class="card">
+    <div class="card-title"><i class="ti ti-user-plus"></i> إضافة مستخدم</div>
+    <div id="add-user-error" class="alert alert-warning"></div>
+    <div id="add-user-success" class="alert alert-success"></div>
+    <div class="form-grid">
+      <div class="form-group"><label>اسم المستخدم *</label><input type="text" id="nu-username" placeholder="username"></div>
+      <div class="form-group"><label>الاسم الكامل</label><input type="text" id="nu-fullname"></div>
+      <div class="form-group"><label>الدور *</label><select id="nu-role"><option value="staff">موظف</option><option value="admin">مدير</option></select></div>
+      <div class="form-group"><label>كلمة المرور *</label><input type="password" id="nu-password" minlength="12" autocomplete="new-password"></div>
+    </div>
+    <div style="font-size:11px;color:#888;margin-top:8px">كلمة المرور يجب ألا تقل عن 12 حرفًا وتحتوي على أحرف كبيرة وصغيرة ورقم ورمز.</div>
+    <div class="btn-row"><button class="btn btn-primary" data-on-click="addUser()"><i class="ti ti-plus"></i> إضافة</button></div>
+  </div>
+</div>
+
+</div></div>
+
+<!-- مودال تفاصيل الغرفة -->
+<div class="modal-bg" id="room-modal" data-on-click="if(event.target===this)closeModal()">
+  <div class="modal"><div class="modal-title"><span id="modal-title-text"></span><button class="close-btn" data-on-click="closeModal()"><i class="ti ti-x"></i></button></div><div id="modal-content"></div></div>
+</div>
+
+<!-- مودال تعديل الحجز -->
+<div class="modal-bg" id="edit-modal" data-on-click="if(event.target===this)closeEditModal()">
+  <div class="modal" style="max-width:700px"><div class="modal-title"><span id="edit-modal-title">تعديل الحجز</span><button class="close-btn" data-on-click="closeEditModal()"><i class="ti ti-x"></i></button></div><div id="edit-modal-body"></div></div>
+</div>
+
+<!-- مودال تعديل المغادرة -->
+<div class="modal-bg" id="extend-modal" data-on-click="if(event.target===this)closeExtendModal()">
+  <div class="modal">
+    <div class="modal-title"><span id="extend-modal-title">تعديل تاريخ المغادرة</span><button class="close-btn" data-on-click="closeExtendModal()"><i class="ti ti-x"></i></button></div>
+    <div style="font-size:13px;color:#666;margin-bottom:14px" id="extend-info"></div>
+    <div class="form-group" style="margin-bottom:12px"><label>تاريخ المغادرة الجديد *</label><input type="date" id="extend-new-checkout" data-on-change="updateExtendNights()"></div>
+    <div class="nights-box" id="extend-nights-display" style="margin-bottom:14px">اختر التاريخ</div>
+    <div id="extend-error" class="alert alert-warning"></div>
+    <div id="extend-success" class="alert alert-success"></div>
+    <div class="btn-row">
+      <button class="btn btn-primary" id="extend-confirm-btn" data-on-click="confirmExtend()"><i class="ti ti-check"></i> تأكيد</button>
+      <button class="btn btn-secondary" data-on-click="closeExtendModal()">إلغاء</button>
+    </div>
+  </div>
+</div>
+
+<!-- مودال المجموعة -->
+<div class="modal-bg" id="group-modal" data-on-click="if(event.target===this)closeGroupModal()">
+  <div class="modal" style="max-width:800px"><div class="modal-title"><span id="group-modal-title">الحجز الجماعي</span><button class="close-btn" data-on-click="closeGroupModal()"><i class="ti ti-x"></i></button></div><div id="group-modal-body"></div></div>
+</div>
+
+<!-- مودال إضافة غرفة لمجموعة -->
+<div class="modal-bg" id="add-group-room-modal" data-on-click="if(event.target===this)closeAddGroupRoomModal()">
+  <div class="modal" style="max-width:600px">
+    <div class="modal-title"><span id="add-group-room-title">إضافة غرفة للمجموعة</span><button class="close-btn" data-on-click="closeAddGroupRoomModal()"><i class="ti ti-x"></i></button></div>
+    <div id="add-group-room-body"></div>
+  </div>
+</div>
+
+<!-- مودال تعديل المستخدم -->
+<div class="modal-bg" id="edit-user-modal" data-on-click="if(event.target===this)closeEditUserModal()">
+  <div class="modal">
+    <div class="modal-title"><span id="edit-user-title">تعديل المستخدم</span><button class="close-btn" data-on-click="closeEditUserModal()"><i class="ti ti-x"></i></button></div>
+    <div id="edit-user-error" class="alert alert-warning"></div>
+    <div id="edit-user-success" class="alert alert-success"></div>
+    <input type="hidden" id="eu-auth-id">
+    <div class="form-grid">
+      <div class="form-group"><label>اسم المستخدم</label><input type="text" id="eu-username" readonly></div>
+      <div class="form-group"><label>الاسم الكامل *</label><input type="text" id="eu-fullname" maxlength="120"></div>
+      <div class="form-group"><label>الدور *</label><select id="eu-role"><option value="staff">موظف</option><option value="admin">مدير</option></select></div>
+      <div class="form-group"><label>كلمة مرور جديدة</label><input type="password" id="eu-password" minlength="12" autocomplete="new-password" placeholder="اتركها فارغة بدون تغيير"></div>
+      <div class="form-group full"><label>تأكيد كلمة المرور الجديدة</label><input type="password" id="eu-password-confirm" minlength="12" autocomplete="new-password"></div>
+    </div>
+    <div style="font-size:11px;color:#888;margin-top:8px">اترك حقول كلمة المرور فارغة للاحتفاظ بكلمة المرور الحالية.</div>
+    <div class="btn-row">
+      <button class="btn btn-primary" id="edit-user-save-btn" data-on-click="saveEditUser()"><i class="ti ti-check"></i> حفظ التعديلات</button>
+      <button class="btn btn-secondary" data-on-click="closeEditUserModal()">إلغاء</button>
+    </div>
+  </div>
+</div>
+
+<!-- مودال حذف نهائي -->
+<div class="modal-bg" id="perm-delete-modal" data-on-click="if(event.target===this)closePermDeleteModal()">
+  <div class="modal">
+    <div class="modal-title"><span>حذف نهائي</span><button class="close-btn" data-on-click="closePermDeleteModal()"><i class="ti ti-x"></i></button></div>
+    <p style="font-size:13px;color:#666;margin-bottom:6px" id="perm-delete-info"></p>
+    <p style="font-size:12px;color:#CC2200;font-weight:700;margin-bottom:20px">هذا الإجراء لا يمكن التراجع عنه</p>
+    <div class="btn-row">
+      <button class="btn btn-danger" id="perm-delete-confirm-btn" data-on-click="executePermanentDelete()"><i class="ti ti-trash"></i> حذف نهائي</button>
+      <button class="btn btn-secondary" data-on-click="closePermDeleteModal()">إلغاء</button>
+    </div>
+  </div>
+</div>
+
+<script src="app.js" defer></script>
+</body>
+</html>

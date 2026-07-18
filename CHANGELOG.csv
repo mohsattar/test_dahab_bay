@@ -1,0 +1,30 @@
+﻿Area,Before,After,Changed File(s)
+Authentication,Direct query to public.users with username and plaintext password,Supabase Auth password grant using synthetic internal email; session JWT required,index.html
+Password storage,Readable password column in public.users,Bcrypt password hashes managed by Supabase Auth; legacy values cleared,001_secure_schema.sql
+User profile,Custom users table mixed credentials and role data,profiles table linked to auth.users; username/fullname/role only,001_secure_schema.sql
+Authorization,Admin role checked mainly by hiding Users button,Frontend guards plus server-side profile/admin checks on every privileged operation,index.html / SQL / Edge Function
+Direct database access,Publishable key could call bookings/users tables directly,Direct table grants revoked; RLS enabled; only authenticated RPC execution granted,001_secure_schema.sql
+Booking PII storage,"Names, phones, IDs, addresses, notes and guest JSON stored as plaintext",Sensitive values stored as AES-256 PGP ciphertext using Vault-managed key,001_secure_schema.sql
+Encryption key,No application field-encryption key,256-bit key generated and stored encrypted in Supabase Vault,001_secure_schema.sql
+Booking reads,Browser selected all rows directly from bookings,Authenticated api_list_bookings RPC decrypts only after active-user check,index.html / SQL
+Booking creation,One insert per room; partial group saves possible,Single transactional api_create_bookings RPC for all rooms,index.html / SQL
+Room conflict,Availability checked only in browser memory,Server-side advisory locks and overlap validation inside transaction,001_secure_schema.sql
+Booking IDs,Browser generated Date.now primary keys,Database identity generates IDs,index.html / SQL
+Concurrent edits,Last write silently overwrote previous changes,Version field and expected_version conflict protection,index.html / SQL
+Booking deletion,Any UI user could permanently delete directly,Admin-only server RPC performs soft delete and audit entry,index.html / SQL
+Group operations,Looped PATCH/DELETE requests could partially complete,Transactional group checkout/delete RPCs,index.html / SQL
+User creation,Browser inserted a users row with plaintext password,Admin-only Edge Function creates Supabase Auth user and profile,index.html / admin-users
+User editing,"No UI for name, role or password",Admin edit modal and secure Edge Function update,index.html / admin-users
+Last administrator,Could delete/demote all admins,"Self-demotion, self-delete and last-admin protections",admin-users
+XSS,Database values inserted directly into innerHTML and print HTML,"Context escaping, DOM construction for users, safe attribute/JS argument helpers",index.html
+Excel export,Available to all users and contained full PII,Visible and executable only for admins,index.html
+Raw errors,Database errors could be shown to users,Generic UI messages; detailed errors only in console/server logs,index.html / admin-users
+Audit,No durable change history,audit_log records user and booking operations,001_secure_schema.sql / admin-users
+Security headers,"No CSP, frame, referrer or permissions headers",Vercel security headers and no-store caching,vercel.json
+CORS,No privileged backend endpoint,Admin Edge Function allows only configured Vercel origin,admin-users
+Legacy data,Old plaintext tables remained application source,"Renamed, locked, then dropped after verification",001 / 003 migrations
+Backup recovery,Backup procedure did not account for encryption key,Separate Vault recovery-key and encrypted-data restore procedure,BACKUP_AND_RECOVERY.md
+Inline JavaScript,104 inline onclick/onchange/oninput/onkeydown handlers and one large inline script,"External app.js, non-executable data-on-* attributes, allowlisted delegated dispatcher, CSP without unsafe-inline/unsafe-eval",index.html / app.js / vercel.json
+Print rendering,document.write() with generated voucher HTML,"DOMParser + imported document tree, escaped dynamic values, popup opener detached",app.js
+Third-party icon CDN,Runtime stylesheet and webfont from jsDelivr,Removed; self-contained Unicode icon glyph CSS and tighter CSP,index.html / vercel.json
+Edge dependency pinning,Unpinned major-version runtime package import,Exact @supabase/supabase-js 2.102.0 import; new secret-key environment variables with legacy fallback,supabase/functions/admin-users/index.ts
