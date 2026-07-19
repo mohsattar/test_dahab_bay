@@ -1,24 +1,14 @@
-import { createClient } from 'npm:@supabase/supabase-js@2.102.0'
+import { withSupabase } from 'npm:@supabase/server@^1'
 
 type Json = Record<string, unknown>
-
-const SUPABASE_URL = Deno.env.get('SUPABASE_URL') ?? ''
-
-function defaultKey(jsonVariable: string, legacyVariable: string): string {
-  const raw = Deno.env.get(jsonVariable) ?? ''
-  if (raw) {
-    try {
-      const values = JSON.parse(raw) as Record<string, string>
-      return values.default ?? Object.values(values)[0] ?? ''
-    } catch {
-      console.error(`Invalid ${jsonVariable} JSON`)
-    }
-  }
-  return Deno.env.get(legacyVariable) ?? ''
+type CallerProfile = {
+  auth_user_id: string
+  username: string
+  fullname: string
+  role: 'admin' | 'staff'
+  is_active: boolean
 }
 
-const SUPABASE_PUBLISHABLE_KEY = defaultKey('SUPABASE_PUBLISHABLE_KEYS', 'SUPABASE_ANON_KEY')
-const SUPABASE_SECRET_KEY = defaultKey('SUPABASE_SECRET_KEYS', 'SUPABASE_SERVICE_ROLE_KEY')
 const ALLOWED_ORIGINS = (Deno.env.get('ALLOWED_ORIGIN') ?? '')
   .split(',')
   .map((value) => value.trim())
@@ -28,7 +18,7 @@ const USERNAME_RE = /^[a-z0-9._-]{3,40}$/
 const PASSWORD_RE = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{12,}$/
 const AUTH_EMAIL_DOMAIN = 'dahabbay.example.com'
 
-function corsHeaders(origin: string | null): HeadersInit {
+function responseHeaders(origin: string | null): HeadersInit {
   const allowedOrigin = origin && ALLOWED_ORIGINS.includes(origin) ? origin : ''
   return {
     'Access-Control-Allow-Origin': allowedOrigin,
@@ -45,7 +35,7 @@ function corsHeaders(origin: string | null): HeadersInit {
 function jsonResponse(origin: string | null, status: number, body: Json): Response {
   return new Response(JSON.stringify(body), {
     status,
-    headers: corsHeaders(origin),
+    headers: responseHeaders(origin),
   })
 }
 
@@ -61,54 +51,39 @@ function errorResponse(origin: string | null, status: number, code: string): Res
   return jsonResponse(origin, status, { error: code, code })
 }
 
-Deno.serve(async (req: Request) => {
-  const origin = req.headers.get('Origin')
+export default {
+  fetch: withSupabase({ auth: 'user' }, async (req, ctx) => {
+    const origin = req.headers.get('Origin')
 
-  if (req.method === 'OPTIONS') {
     if (!origin || !ALLOWED_ORIGINS.includes(origin)) {
       return errorResponse(origin, 403, 'ORIGIN_NOT_ALLOWED')
     }
-    return new Response(null, { status: 204, headers: corsHeaders(origin) })
-  }
+    if (req.method !== 'POST') {
+      return errorResponse(origin, 405, 'METHOD_NOT_ALLOWED')
+    }
 
-  if (req.method !== 'POST') return errorResponse(origin, 405, 'METHOD_NOT_ALLOWED')
-  if (!origin || !ALLOWED_ORIGINS.includes(origin)) {
-    return errorResponse(origin, 403, 'ORIGIN_NOT_ALLOWED')
-  }
-  if (!SUPABASE_URL || !SUPABASE_PUBLISHABLE_KEY || !SUPABASE_SECRET_KEY) {
-    console.error('Missing required Supabase environment variables')
-    return errorResponse(origin, 500, 'SERVER_CONFIGURATION_ERROR')
-  }
+    // Use the same authenticated RPC that already succeeds in the browser.
+    // This avoids misclassifying an admin-client lookup problem as a disabled account.
+    const { data: profileData, error: profileError } = await ctx.supabase.rpc('api_my_profile')
+    if (profileError) {
+      console.error('Caller profile RPC failed', profileError.message, profileError.code, profileError.details)
+      return errorResponse(origin, 500, 'PROFILE_LOOKUP_FAILED')
+    }
 
-  const authHeader = req.headers.get('Authorization') ?? ''
-  const token = authHeader.startsWith('Bearer ') ? authHeader.slice(7) : ''
-  if (!token) return errorResponse(origin, 401, 'NOT_AUTHENTICATED')
+    const callerProfile = profileData as CallerProfile | null
+    if (!callerProfile?.auth_user_id) {
+      console.error('Caller profile RPC returned no profile')
+      return errorResponse(origin, 403, 'PROFILE_NOT_FOUND')
+    }
+    if (!callerProfile.is_active) {
+      return errorResponse(origin, 403, 'ACCOUNT_DISABLED')
+    }
+    if (callerProfile.role !== 'admin') {
+      return errorResponse(origin, 403, 'ADMIN_REQUIRED')
+    }
 
-  const userClient = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
-    auth: { persistSession: false, autoRefreshToken: false },
-    global: { headers: { Authorization: authHeader } },
-  })
-  const adminClient = createClient(SUPABASE_URL, SUPABASE_SECRET_KEY, {
-    auth: { persistSession: false, autoRefreshToken: false },
-  })
-
-  const { data: authData, error: authError } = await userClient.auth.getUser(token)
-  if (authError || !authData.user) return errorResponse(origin, 401, 'INVALID_SESSION')
-
-  const callerId = authData.user.id
-  const { data: callerProfile, error: callerProfileError } = await adminClient
-    .from('profiles')
-    .select('auth_user_id,username,fullname,role,is_active')
-    .eq('auth_user_id', callerId)
-    .single()
-
-  if (callerProfileError || !callerProfile?.is_active) {
-    return errorResponse(origin, 403, 'ACCOUNT_DISABLED')
-  }
-  if (callerProfile.role !== 'admin') {
-    return errorResponse(origin, 403, 'ADMIN_REQUIRED')
-  }
-
+    const callerId = callerProfile.auth_user_id
+    const adminClient = ctx.supabaseAdmin
   let body: Json
   try {
     body = await req.json()
@@ -287,4 +262,5 @@ Deno.serve(async (req: Request) => {
     console.error('admin-users unexpected error', error)
     return errorResponse(origin, 500, 'UNEXPECTED_ERROR')
   }
-})
+  }),
+}
