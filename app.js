@@ -96,15 +96,60 @@ async function edgeAdmin(action,payload={}){
 function isAdmin(){return currentUser?.role==='admin';}
 function requireAdmin(){
   if(isAdmin())return true;
-  alert('Administrator access is required');
+  alert(t('auth.admin_required'));
   return false;
 }
 function safeErrorMessage(error,fallback){
   console.error(error);
-  return fallback||'تعذر إتمام العملية. يرجى المحاولة مرة أخرى.';
+  return fallback||t('common.operation_failed');
 }
 
-const I18N_PAIRS=[["نظام حجوزات فندق دهب باي","Dahab Bay Hotel Reservation System"],["فندق دهب باي — نظام الحجوزات","Dahab Bay Hotel — Reservation System"],["فندق دهب باي","Dahab Bay Hotel"],["اسم المستخدم أو كلمة المرور غير صحيحة","Incorrect username or password"],["اسم المستخدم","Username"],["كلمة المرور","Password"],["دخول","Login"],["خروج","Logout"],["لوحة التحكم","Dashboard"],["حجز جديد","New Booking"],["قائمة الحجوزات","Bookings"],["خريطة الغرف","Room Map"],["حالة الفندق","Hotel Status"],["الرحلات","Trips"],["المستخدمون","Users"],["إجمالي الغرف","Total Rooms"],["1–10 و 101–131","1–10 and 101–131"],["مشغولة الآن","Currently Occupied"],["حجز نشط","Active booking"],["متاحة","Available"],["غرفة فارغة","Vacant room"],["مغادرة اليوم","Checkout Today"],["يجب التسوية","Settlement required"],["إجمالي النزلاء الآن","Current Guests"],["في كل الغرف المشغولة","Across occupied rooms"],["وصول اليوم","Today's Check-ins"],["جارٍ التحميل...","Loading..."],["تاريخ وصول / مغادرة","Check-in / Checkout Dates"],["تاريخ وصول + عدد الليالي","Check-in + Number of Nights"],["تاريخ الوصول *","Check-in Date *"],["تاريخ المغادرة *","Checkout Date *"],["عدد الليالي *","Number of Nights *"],["عدد الليالي","Number of Nights"],["إجمالي الليالي","Total Nights"],["اختر التواريخ","Select dates"],["المبلغ الإجمالي (جنيه)","Total Amount (EGP)"],["المبلغ (جنيه)","Amount (EGP)"],["السعر (جنيه)","Price (EGP)"],["ملاحظات","Notes"],["أي ملاحظات إضافية...","Any additional notes..."],["المسؤول عن الحجز","Booking Responsible Person"],["نوع المسؤول","Responsible Person Type"],["نزيل الغرفة الأولى","First-room guest"],["مسؤول خارجي (مندوب / شركة سياحة)","External responsible person (representative / travel agency)"],["الاسم الكامل *","Full Name *"],["الاسم الكامل","Full Name"],["اسم المسؤول","Responsible person's name"],["الجنسية","Nationality"],["مصري، سعودي...","Egyptian, Saudi..."],["نوع الوثيقة","Document Type"],["بطاقة قومية","National ID"],["باسبورت","Passport"],["رقم الوثيقة","Document Number"],["مكان الإقامة / الشركة","Residence / Company"],["مكان الإقامة","Residence"],["المدينة أو العنوان","City or address"],["رقم البطاقة / الباسبورت","ID / passport number"],["إضافة غرفة","Add Room"],["تأكيد الحجز","Confirm Booking"],["مسح","Clear"],["بحث بالاسم أو رقم الغرفة أو الهاتف...","Search by name, room number, or phone..."],["كل الحالات","All Statuses"],["نشط","Active"],["منتهي","Completed"],["تصدير Excel","Export Excel"],["الغرفة","Room"],["النزيل","Guest"],["الوصول","Check-in"],["المغادرة","Checkout"],["ليالي","Nights"],["المبلغ","Amount"],["الحالة","Status"],["إجراء","Action"],["لا توجد حجوزات","No bookings found"],["مشغولة","Occupied"],["الطابق الأرضي","Ground Floor"],["الطابق الأول","First Floor"],["الغرف الشاغرة الآن","Vacant Rooms Now"],["الغرف المشغولة حاليًا","Currently Occupied Rooms"],["حجوزات قادمة — لسه ما وصلتش","Upcoming Bookings — Not Yet Checked In"],["الرحلات الخارجية","External Trips"],["كل الغرف","All Rooms"],["كل الحجوزات","All Bookings"],["حجوزات نشطة","Active Bookings"],["حجوزات منتهية","Completed Bookings"],["الإجمالي:","Total:"],["اسم الرحلة","Trip Name"],["التاريخ","Date"],["السعر","Price"],["لا توجد رحلات مسجلة","No trips recorded"],["إدارة المستخدمين","User Management"],["إضافة مستخدم","Add User"],["الاسم الكامل","Full Name"],["إضافة","Add"],["تعديل الحجز","Edit Booking"],["تعديل تاريخ المغادرة","Change Checkout Date"],["تاريخ المغادرة الجديد *","New Checkout Date *"],["اختر التاريخ","Select date"],["تأكيد","Confirm"],["إلغاء","Cancel"],["الحجز الجماعي","Group Booking"],["إضافة غرفة للمجموعة","Add Room to Group"],["حذف نهائي","Permanent Delete"],["هذا الإجراء لا يمكن التراجع عنه","This action cannot be undone"],["جارٍ التحقق...","Checking..."],["خطأ في الاتصال","Connection error"],["تنبيه:","Alert:"],["لا يوجد وصول اليوم","No check-ins today"],["لا يوجد مغادرة اليوم","No checkouts today"],["لا توجد غرف شاغرة حاليًا","No vacant rooms currently"],["غير محدد","Not specified"],["لا توجد غرف مشغولة حاليًا","No occupied rooms currently"],["لا توجد حجوزات قادمة حاليًا","No upcoming bookings currently"],["تجاوز المغادرة","Checkout overdue"],["حجوزات مستقبلية","Future Bookings"],["لا توجد حجوزات مستقبلية لهذه الغرفة","No future bookings for this room"],["تجاوز تاريخ المغادرة — يرجى التمديد أو تسجيل المغادرة","Checkout date has passed — extend the stay or check out"],["المسؤول الخارجي:","External responsible person:"],["النزلاء الإضافيون","Additional Guests"],["عرض كل رحلات الفندق ›","View all hotel trips ›"],["لا توجد رحلات مسجلة لهذا الحجز","No trips recorded for this booking"],["تسجيل مغادرة","Check Out"],["تعديل","Edit"],["تعديل المغادرة","Change Checkout"],["طباعة إيصال","Print Voucher"],["حذف","Delete"],["إغلاق","Close"],["الغرفة متاحة","Room is available"],["حجز الغرفة","Book Room"],["تأكيد تسجيل المغادرة؟","Confirm checkout?"],["خطأ في تسجيل المغادرة","Checkout failed"],["متأخر ⚠️","Overdue ⚠️"],["متأخر","Overdue"],["تفاصيل","Details"],["المجموعة","Group"],["مغادرة","Checkout"],["حذف نهائي","Permanent Delete"],["اختر الرحلة...","Choose a trip..."],["أخرى (اكتب اسم مختلف)","Other (enter a different name)"],["اسم الرحلة (اكتب هنا)","Trip Name (enter here)"],["اكتب اسم الرحلة","Enter trip name"],["تاريخ الرحلة","Trip Date"],["كل الأنواع","All Room Types"],["كل الإطلالات","All Views"],["لا توجد غرف مطابقة","No matching rooms"],["(مشغولة)","(Occupied)"],["(محجوز في الحجز)","(Selected in this booking)"],["نوع الغرفة *","Room Type *"],["فلتر الإطلالة","View Filter"],["رقم الغرفة *","Room Number *"],["الإطلالة","View"],["نوع الإقامة *","Board Type *"],["رحلات خارجية (اختياري)","External Trips (Optional)"],["إضافة رحلة","Add Trip"],["نزيل الغرفة الأولى = المسؤول","First-room guest = responsible person"],["مسؤول الغرفة","Room Responsible Person"],["اختياري","Optional"],["رقم الهاتف","Phone Number"],["يرجى تحديد التواريخ","Please select the dates"],["تاريخ المغادرة يجب أن يكون بعد الوصول","Checkout date must be after check-in"],["يرجى إضافة غرفة على الأقل","Please add at least one room"],["يرجى إدخال اسم المسؤول الخارجي","Please enter the external responsible person's name"],["عند حجز أكثر من غرفة يجب تحديد مسؤول خارجي","An external responsible person is required when booking multiple rooms"],["يرجى اختيار رقم الغرفة","Please select a room number"],["لا يمكن اختيار نفس الغرفة مرتين","The same room cannot be selected twice"],["جارٍ الحفظ...","Saving..."],["خطأ في حفظ الحجز — ","Booking save error — "],["بيانات الحجز","Booking Details"],["تاريخ مغادرة","Checkout Date"],["عدد ليالي","Number of Nights"],["الليالي","Nights"],["المسؤول الخارجي","External Responsible Person"],["النزيل الأول — مسؤول الغرفة","First Guest — Room Responsible Person"],["حفظ التعديلات","Save Changes"],["تواريخ غير صحيحة","Invalid dates"],["أدخل عدد الليالي","Enter number of nights"],["يرجى إدخال اسم النزيل","Please enter the guest name"],["يرجى التحقق من التواريخ","Please verify the dates"],["تم حفظ التعديلات","Changes saved"],["خطأ في الحفظ","Save error"],["اختر الغرفة","Select room"],["نوع الإقامة","Board Type"],["هيتم تحويل الحجز لحجز جماعي وإضافة الغرفة الجديدة بنفس تواريخ الإقامة","The booking will be converted to a group booking and the new room will use the same stay dates"],["هتتضاف الغرفة الجديدة لنفس المجموعة، بنفس تواريخ الإقامة","The new room will be added to the same group with the same stay dates"],["يرجى إدخال اسم النزيل الأول","Please enter the first guest's name"],["إضافة الغرفة","Add Room"],["اختر التاريخ الجديد","Select the new date"],["لم يتغير التاريخ","The date has not changed"],["التاريخ يجب أن يكون بعد الوصول","The date must be after check-in"],["تاريخ غير صحيح","Invalid date"],["لا توجد حجوزات في هذه المجموعة","No bookings found in this group"],["عدد الغرف","Number of Rooms"],["إجمالي المبلغ","Total Amount"],["غرف نشطة","Active Rooms"],["طباعة وصل المجموعة","Print Group Voucher"],["حذف المجموعة كاملة","Delete Entire Group"],["تسجيل مغادرة هذه الغرفة؟","Check out this room?"],["خطأ","Error"],["مدير","Administrator"],["موظف","Staff"],["يرجى إدخال اسم المستخدم وكلمة المرور","Please enter username and password"],["خطأ — قد يكون اسم المستخدم مكرراً","Error — the username may already exist"],["خطأ في الحذف","Delete error"],["المسؤول:","Responsible person:"],["طباعة","Print"],["غرفة","Room"],["النزلاء","Guests"],["النوع","Type"],["نوع الإقامة","Board Type"],["وصول","Check-in"],["مغادرة","Checkout"],["لا يوجد بيانات","No data available"],["النزيل الرئيسي","Primary Guest"],["رقم المجموعة","Group Number"],["إقامة بالفطار","Bed & Breakfast"],["نصف إقامة (فطار وعشاء)","Half Board (Breakfast & Dinner)"],["إقامة كاملة (فطار وغداء وعشاء)","Full Board (Breakfast, Lunch & Dinner)"],["إقامة بالفطار (Bed & Breakfast)","Bed & Breakfast"],["نصف إقامة — فطار وعشاء (Half Board)","Half Board (Breakfast & Dinner)"],["إقامة كاملة — فطار وغداء وعشاء (Full Board)","Full Board (Breakfast, Lunch & Dinner)"],["إطلالة بحر","Sea View"],["مواجهة بحر","Sea Side"],["حديقة","Garden View"],["إطلالة مسبح","Pool View"],["حفلة وادي استار في الطويلات","Wadi Star Party in Al-Tawilat"],["حفلة وادي القمر في الطويلات","Wadi Al-Qamar Party in Al-Tawilat"],["رحلة البلوهول وأبوجالوم والبلولاجون","Blue Hole, Abu Galum & Blue Lagoon Trip"],["رحلة محمية الثري بولز وسفاري البيتش باجي لوادي جني","Three Pools Reserve & Beach Buggy Safari to Wadi Gnai"],["سفاري بيتش باجي بانوراما دهب والطويلات","Beach Buggy Safari — Dahab Panorama & Al-Tawilat"],["الرحلة البحرية باليخت (صباحي)","Morning Yacht Trip"],["الرحلة البحرية باليخت (مسائي)","Evening Yacht Trip"],["حفلة جبل الطويلات خيمة الطباخ","Al-Tawilat Mountain Party — Al-Tabbakh Tent"],["حفلة جبل الطويلات واحة زين","Al-Tawilat Mountain Party — Zain Oasis"],["رحلة الغواصة","Submarine Trip"],["داي يوز شرم الشيخ كافيه فرشة والسوق القديم","Sharm El-Sheikh Day Use — Farsha Cafe & Old Market"],["رحلة وادي الوشواش وراس شطان","Wadi Al-Weshwash & Ras Shitan Trip"],["رحلة سانت كاترين وجبل موسى","Saint Catherine & Mount Moses Trip"]];
+
+const TRANSLATIONS={
+  ar:{
+    'hotel.name':'فندق دهب باي','hotel.system':'نظام الحجوزات والتشغيل','hotel.quote':'«ارتقِ بإقامتك وألهم يومك.»','hotel.eyebrow':'فندق دهب باي','hotel.design_credit':'تصميم مستوحى من هوية فندق دهب باي',
+    'nav.main':'القائمة الرئيسية','auth.username':'اسم المستخدم','auth.password':'كلمة المرور','auth.username_placeholder':'أدخل اسم المستخدم','auth.password_placeholder':'أدخل كلمة المرور','auth.invalid':'اسم المستخدم أو كلمة المرور غير صحيحة','auth.login':'دخول','auth.logout':'خروج','auth.checking':'جارٍ التحقق...','auth.admin_required':'يتطلب هذا الإجراء صلاحية مدير','auth.account_disabled':'الحساب غير نشط','auth.session_expired':'انتهت صلاحية الجلسة','auth.not_authenticated':'لم يتم تسجيل الدخول',
+    'page.dashboard.title':'لوحة التحكم','page.dashboard.subtitle':'نظرة واضحة على عمليات الفندق اليوم','page.new_booking.title':'حجز جديد','page.new_booking.subtitle':'سجل بيانات الإقامة والنزيل والدفع ضمن خطوات واضحة.','page.bookings.title':'الحجوزات','page.bookings.subtitle':'ابحث وراجع وأدر الحجوزات من شاشة واحدة.','page.rooms.title':'خريطة الغرف','page.rooms.subtitle':'راجع حالة الإشغال والإتاحة لكل غرف الفندق.','page.status.title':'حالة الفندق','page.status.subtitle':'تابع الغرف الشاغرة والمشغولة والحجوزات القادمة.','page.trips.title':'الرحلات والأنشطة','page.trips.subtitle':'نظّم الرحلات الخارجية واربطها بإقامة النزلاء.','page.users.title':'إدارة المستخدمين','page.users.subtitle':'تحكم في الأسماء والأدوار وصلاحيات الوصول الآمن.',
+    'dashboard.eyebrow':'ضيافة دهب باي الساحلية','dashboard.welcome':'مرحباً بعودتك','dashboard.description':'لوحة تشغيل حديثة مستوحاة من أجواء فندق دهب باي الساحلية الدافئة وإطلالات البحر والضيافة الهادئة.','dashboard.create_booking':'إنشاء حجز','dashboard.view_rooms':'عرض خريطة الغرف','dashboard.today':'اليوم','dashboard.hotel_pulse':'ملخص الفندق','dashboard.arrivals':'الوصول','dashboard.departures':'المغادرة','dashboard.occupancy':'نسبة الإشغال',
+    'users.management':'إدارة المستخدمين','users.add':'إضافة مستخدم','users.edit':'تعديل المستخدم','users.username':'اسم المستخدم','users.username_required':'اسم المستخدم *','users.username_placeholder':'username','users.fullname':'الاسم الكامل','users.fullname_required':'الاسم الكامل *','users.role_required':'الدور *','users.password_required':'كلمة المرور *','users.new_password':'كلمة مرور جديدة','users.confirm_password':'تأكيد كلمة المرور الجديدة','users.password_unchanged_placeholder':'اتركها فارغة بدون تغيير','users.password_policy':'كلمة المرور يجب ألا تقل عن 12 حرفًا وتحتوي على أحرف كبيرة وصغيرة ورقم ورمز.','users.leave_password_blank':'اترك حقول كلمة المرور فارغة للاحتفاظ بكلمة المرور الحالية.','users.none':'لا يوجد مستخدمون','users.load_failed':'تعذر تحميل المستخدمين','users.username_rule':'اسم المستخدم يجب أن يحتوي على أحرف إنجليزية صغيرة أو أرقام أو . _ -','users.fullname_required_error':'يرجى إدخال الاسم الكامل','users.password_policy_error':'كلمة المرور لا تطابق متطلبات الأمان','users.username_exists':'اسم المستخدم موجود بالفعل','users.add_failed':'تعذر إضافة المستخدم','users.added':'تمت إضافة "{username}" بنجاح','users.edit_title':'تعديل المستخدم — {username}','users.password_mismatch':'كلمتا المرور غير متطابقتين','users.password_changed':'تم تغيير كلمة المرور. يرجى تسجيل الدخول مرة أخرى.','users.last_admin_demote':'لا يمكن إزالة آخر مدير','users.self_demotion':'لا يمكن للمدير تخفيض دوره بنفسه','users.save_failed':'تعذر حفظ التعديلات','users.last_admin_delete':'لا يمكن حذف آخر مدير','users.delete_confirm':'حذف المستخدم "{username}"؟','users.delete_failed':'خطأ في الحذف','users.admin':'مدير','users.staff':'موظف',
+    'booking.load_failed':'تعذر تحميل الحجوزات','booking.save_atomic_failed':'تعذر حفظ الحجز. لم يتم حفظ أي بيانات جزئية.','booking.room_conflict':'الغرفة محجوزة بالفعل في الفترة المحددة','booking.version_conflict':'تم تعديل الحجز بواسطة مستخدم آخر. أعد تحميل الصفحة.',
+    'print.popup_failed':'تعذر فتح نافذة الطباعة. يرجى السماح بالنوافذ المنبثقة.','common.operation_failed':'تعذر إتمام العملية. يرجى المحاولة مرة أخرى.','common.save_changes':'حفظ التعديلات','common.cancel':'إلغاء','common.permanent_delete':'حذف نهائي','common.cannot_undo':'هذا الإجراء لا يمكن التراجع عنه','common.saving':'جارٍ الحفظ...','common.changes_saved':'تم حفظ التعديلات'
+  },
+  en:{
+    'hotel.name':'Dahab Bay Hotel','hotel.system':'Reservation & Operations System','hotel.quote':'“Elevate your stay, inspire your day.”','hotel.eyebrow':'Dahab Bay Hotel','hotel.design_credit':'Design inspired by Dahab Bay Hotel','nav.main':'Main menu',
+    'auth.username':'Username','auth.password':'Password','auth.username_placeholder':'Enter username','auth.password_placeholder':'Enter password','auth.invalid':'Incorrect username or password','auth.login':'Login','auth.logout':'Logout','auth.checking':'Checking...','auth.admin_required':'Administrator access is required','auth.account_disabled':'Account is disabled','auth.session_expired':'Your session has expired','auth.not_authenticated':'You are not signed in',
+    'page.dashboard.title':'Dashboard','page.dashboard.subtitle':"A clear overview of today's hotel operations",'page.new_booking.title':'New Booking','page.new_booking.subtitle':'Capture stay, guest, and payment details in a clear workflow.','page.bookings.title':'Bookings','page.bookings.subtitle':'Search, review, and manage reservations from one screen.','page.rooms.title':'Room Map','page.rooms.subtitle':'Review occupancy and availability across the hotel.','page.status.title':'Hotel Status','page.status.subtitle':'Monitor vacant, occupied, and upcoming reservations.','page.trips.title':'Trips & Activities','page.trips.subtitle':'Organize external trips and link them to guest stays.','page.users.title':'User Management','page.users.subtitle':'Control names, roles, and secure access permissions.',
+    'dashboard.eyebrow':'Dahab Bay coastal hospitality','dashboard.welcome':'Welcome back','dashboard.description':"A modern operations dashboard inspired by Dahab Bay Hotel's warm coastal atmosphere, sea views, and relaxed hospitality.",'dashboard.create_booking':'Create booking','dashboard.view_rooms':'View room map','dashboard.today':'Today','dashboard.hotel_pulse':'Hotel pulse','dashboard.arrivals':'Arrivals','dashboard.departures':'Departures','dashboard.occupancy':'Occupancy',
+    'users.management':'User Management','users.add':'Add User','users.edit':'Edit User','users.username':'Username','users.username_required':'Username *','users.username_placeholder':'username','users.fullname':'Full Name','users.fullname_required':'Full Name *','users.role_required':'Role *','users.password_required':'Password *','users.new_password':'New Password','users.confirm_password':'Confirm New Password','users.password_unchanged_placeholder':'Leave blank to keep unchanged','users.password_policy':'The password must be at least 12 characters and contain uppercase and lowercase letters, a number, and a symbol.','users.leave_password_blank':'Leave the password fields blank to keep the current password.','users.none':'No users found','users.load_failed':'Unable to load users','users.username_rule':'Username may contain lowercase English letters, numbers, dots, underscores, and hyphens only','users.fullname_required_error':'Please enter the full name','users.password_policy_error':'The password does not meet the security requirements','users.username_exists':'The username already exists','users.add_failed':'Unable to add the user','users.added':'"{username}" was added successfully','users.edit_title':'Edit User — {username}','users.password_mismatch':'The passwords do not match','users.password_changed':'The password was changed. Please sign in again.','users.last_admin_demote':'The last administrator cannot be demoted','users.self_demotion':'An administrator cannot demote their own account','users.save_failed':'Unable to save the changes','users.last_admin_delete':'The last administrator cannot be deleted','users.delete_confirm':'Delete user "{username}"?','users.delete_failed':'Delete failed','users.admin':'Administrator','users.staff':'Staff',
+    'booking.load_failed':'Unable to load bookings','booking.save_atomic_failed':'Unable to save the booking. No partial data was saved.','booking.room_conflict':'The room is already booked during the selected period','booking.version_conflict':'This booking was changed by another user. Reload the page.',
+    'print.popup_failed':'Unable to open the print window. Please allow pop-ups.','common.operation_failed':'The operation could not be completed. Please try again.','common.save_changes':'Save Changes','common.cancel':'Cancel','common.permanent_delete':'Permanent Delete','common.cannot_undo':'This action cannot be undone','common.saving':'Saving...','common.changes_saved':'Changes saved'
+  }
+};
+function t(key,vars={}){
+  const table=TRANSLATIONS[currentLang]||TRANSLATIONS.ar;
+  let value=table[key]??TRANSLATIONS.ar[key]??key;
+  for(const [name,replacement] of Object.entries(vars||{}))value=value.split(`{${name}}`).join(String(replacement));
+  return value;
+}
+function applyKeyTranslations(root=document){
+  const base=root?.querySelectorAll?root:document;
+  if(root?.matches?.('[data-i18n]'))root.textContent=t(root.dataset.i18n);
+  base.querySelectorAll?.('[data-i18n]').forEach(el=>{el.textContent=t(el.dataset.i18n);});
+  if(root?.matches?.('[data-i18n-placeholder]'))root.placeholder=t(root.dataset.i18nPlaceholder);
+  base.querySelectorAll?.('[data-i18n-placeholder]').forEach(el=>{el.placeholder=t(el.dataset.i18nPlaceholder);});
+  if(root?.matches?.('[data-i18n-title]'))root.title=t(root.dataset.i18nTitle);
+  base.querySelectorAll?.('[data-i18n-title]').forEach(el=>{el.title=t(el.dataset.i18nTitle);});
+}
+const PAGE_I18N={dashboard:['page.dashboard.title','page.dashboard.subtitle'],'new-booking':['page.new_booking.title','page.new_booking.subtitle'],bookings:['page.bookings.title','page.bookings.subtitle'],rooms:['page.rooms.title','page.rooms.subtitle'],status:['page.status.title','page.status.subtitle'],trips:['page.trips.title','page.trips.subtitle'],users:['page.users.title','page.users.subtitle']};
+function updatePageHeading(name){
+  const keys=PAGE_I18N[name]||PAGE_I18N.dashboard;
+  const title=document.getElementById('page-heading-title');const subtitle=document.getElementById('page-heading-subtitle');
+  if(title)title.textContent=t(keys[0]);if(subtitle)subtitle.textContent=t(keys[1]);
+}
+function toggleSidebar(){document.getElementById('sidebar')?.classList.toggle('open');}
+function closeSidebar(){document.getElementById('sidebar')?.classList.remove('open');}
+
+const I18N_PAIRS=[["الدور *", "Role *"],["كلمة المرور يجب ألا تقل عن 12 حرفًا وتحتوي على أحرف كبيرة وصغيرة ورقم ورمز.", "The password must be at least 12 characters and contain uppercase and lowercase letters, a number, and a symbol."],["تعديل المستخدم", "Edit User"],["كلمة مرور جديدة", "New Password"],["تأكيد كلمة المرور الجديدة", "Confirm New Password"],["اتركها فارغة بدون تغيير", "Leave blank to keep unchanged"],["اترك حقول كلمة المرور فارغة للاحتفاظ بكلمة المرور الحالية.", "Leave the password fields blank to keep the current password."],["لا يوجد مستخدمون", "No users found"],["تعذر تحميل المستخدمين", "Unable to load users"],["اسم المستخدم يجب أن يحتوي على أحرف إنجليزية صغيرة أو أرقام أو . _ -", "Username may contain lowercase English letters, numbers, dots, underscores, and hyphens only"],["يرجى إدخال الاسم الكامل", "Please enter the full name"],["كلمة المرور لا تطابق متطلبات الأمان", "The password does not meet the security requirements"],["اسم المستخدم موجود بالفعل", "The username already exists"],["تعذر إضافة المستخدم", "Unable to add the user"],["كلمتا المرور غير متطابقتين", "The passwords do not match"],["تم تغيير كلمة المرور. يرجى تسجيل الدخول مرة أخرى.", "The password was changed. Please sign in again."],["لا يمكن إزالة آخر مدير", "The last administrator cannot be demoted"],["لا يمكن للمدير تخفيض دوره بنفسه", "An administrator cannot demote their own account"],["تعذر حفظ التعديلات", "Unable to save the changes"],["لا يمكن حذف آخر مدير", "The last administrator cannot be deleted"],["تعذر إتمام العملية. يرجى المحاولة مرة أخرى.", "The operation could not be completed. Please try again."],["تعذر تحميل الحجوزات", "Unable to load bookings"],["تعذر حفظ الحجز. لم يتم حفظ أي بيانات جزئية.", "Unable to save the booking. No partial data was saved."],["تعارض مع حجز آخر", "Conflict with another booking"],["تعذر فتح نافذة الطباعة. يرجى السماح بالنوافذ المنبثقة.", "Unable to open the print window. Please allow pop-ups."],["التبديل إلى العربية", "Switch to Arabic"],["دبل توين (2)", "Double Twin (2)"],["دبل كوين (2)", "Double Queen (2)"],["ثلاثي (3)", "Triple (3)"],["رباعي (4)", "Quad (4)"],["فيلا (5)", "Villa (5)"],["عائلي بإطلالة بحر (5)", "Sea View Family (5)"],["إطلالة حديقة", "Garden View"],["الاسم *", "Name *"],["إضافة غرفة لنفس المجموعة", "Add Room to Same Group"],["تحويل لحجز جماعي وإضافة غرفة", "Convert to Group Booking and Add Room"],["جارٍ تحميل المستخدمين", "Loading users"],["نظام حجوزات فندق دهب باي","Dahab Bay Hotel Reservation System"],["فندق دهب باي — نظام الحجوزات","Dahab Bay Hotel — Reservation System"],["فندق دهب باي","Dahab Bay Hotel"],["اسم المستخدم أو كلمة المرور غير صحيحة","Incorrect username or password"],["اسم المستخدم","Username"],["كلمة المرور","Password"],["دخول","Login"],["خروج","Logout"],["لوحة التحكم","Dashboard"],["حجز جديد","New Booking"],["قائمة الحجوزات","Bookings"],["خريطة الغرف","Room Map"],["حالة الفندق","Hotel Status"],["الرحلات","Trips"],["المستخدمون","Users"],["إجمالي الغرف","Total Rooms"],["1–10 و 101–131","1–10 and 101–131"],["مشغولة الآن","Currently Occupied"],["حجز نشط","Active booking"],["متاحة","Available"],["غرفة فارغة","Vacant room"],["مغادرة اليوم","Checkout Today"],["يجب التسوية","Settlement required"],["إجمالي النزلاء الآن","Current Guests"],["في كل الغرف المشغولة","Across occupied rooms"],["وصول اليوم","Today's Check-ins"],["جارٍ التحميل...","Loading..."],["تاريخ وصول / مغادرة","Check-in / Checkout Dates"],["تاريخ وصول + عدد الليالي","Check-in + Number of Nights"],["تاريخ الوصول *","Check-in Date *"],["تاريخ المغادرة *","Checkout Date *"],["عدد الليالي *","Number of Nights *"],["عدد الليالي","Number of Nights"],["إجمالي الليالي","Total Nights"],["اختر التواريخ","Select dates"],["المبلغ الإجمالي (جنيه)","Total Amount (EGP)"],["المبلغ (جنيه)","Amount (EGP)"],["السعر (جنيه)","Price (EGP)"],["ملاحظات","Notes"],["أي ملاحظات إضافية...","Any additional notes..."],["المسؤول عن الحجز","Booking Responsible Person"],["نوع المسؤول","Responsible Person Type"],["نزيل الغرفة الأولى","First-room guest"],["مسؤول خارجي (مندوب / شركة سياحة)","External responsible person (representative / travel agency)"],["الاسم الكامل *","Full Name *"],["الاسم الكامل","Full Name"],["اسم المسؤول","Responsible person's name"],["الجنسية","Nationality"],["مصري، سعودي...","Egyptian, Saudi..."],["نوع الوثيقة","Document Type"],["بطاقة قومية","National ID"],["باسبورت","Passport"],["رقم الوثيقة","Document Number"],["مكان الإقامة / الشركة","Residence / Company"],["مكان الإقامة","Residence"],["المدينة أو العنوان","City or address"],["رقم البطاقة / الباسبورت","ID / passport number"],["إضافة غرفة","Add Room"],["تأكيد الحجز","Confirm Booking"],["مسح","Clear"],["بحث بالاسم أو رقم الغرفة أو الهاتف...","Search by name, room number, or phone..."],["كل الحالات","All Statuses"],["نشط","Active"],["منتهي","Completed"],["تصدير Excel","Export Excel"],["الغرفة","Room"],["النزيل","Guest"],["الوصول","Check-in"],["المغادرة","Checkout"],["ليالي","Nights"],["المبلغ","Amount"],["الحالة","Status"],["إجراء","Action"],["لا توجد حجوزات","No bookings found"],["مشغولة","Occupied"],["الطابق الأرضي","Ground Floor"],["الطابق الأول","First Floor"],["الغرف الشاغرة الآن","Vacant Rooms Now"],["الغرف المشغولة حاليًا","Currently Occupied Rooms"],["حجوزات قادمة — لسه ما وصلتش","Upcoming Bookings — Not Yet Checked In"],["الرحلات الخارجية","External Trips"],["كل الغرف","All Rooms"],["كل الحجوزات","All Bookings"],["حجوزات نشطة","Active Bookings"],["حجوزات منتهية","Completed Bookings"],["الإجمالي:","Total:"],["اسم الرحلة","Trip Name"],["التاريخ","Date"],["السعر","Price"],["لا توجد رحلات مسجلة","No trips recorded"],["إدارة المستخدمين","User Management"],["إضافة مستخدم","Add User"],["الاسم الكامل","Full Name"],["إضافة","Add"],["تعديل الحجز","Edit Booking"],["تعديل تاريخ المغادرة","Change Checkout Date"],["تاريخ المغادرة الجديد *","New Checkout Date *"],["اختر التاريخ","Select date"],["تأكيد","Confirm"],["إلغاء","Cancel"],["الحجز الجماعي","Group Booking"],["إضافة غرفة للمجموعة","Add Room to Group"],["حذف نهائي","Permanent Delete"],["هذا الإجراء لا يمكن التراجع عنه","This action cannot be undone"],["جارٍ التحقق...","Checking..."],["خطأ في الاتصال","Connection error"],["تنبيه:","Alert:"],["لا يوجد وصول اليوم","No check-ins today"],["لا يوجد مغادرة اليوم","No checkouts today"],["لا توجد غرف شاغرة حاليًا","No vacant rooms currently"],["غير محدد","Not specified"],["لا توجد غرف مشغولة حاليًا","No occupied rooms currently"],["لا توجد حجوزات قادمة حاليًا","No upcoming bookings currently"],["تجاوز المغادرة","Checkout overdue"],["حجوزات مستقبلية","Future Bookings"],["لا توجد حجوزات مستقبلية لهذه الغرفة","No future bookings for this room"],["تجاوز تاريخ المغادرة — يرجى التمديد أو تسجيل المغادرة","Checkout date has passed — extend the stay or check out"],["المسؤول الخارجي:","External responsible person:"],["النزلاء الإضافيون","Additional Guests"],["عرض كل رحلات الفندق ›","View all hotel trips ›"],["لا توجد رحلات مسجلة لهذا الحجز","No trips recorded for this booking"],["تسجيل مغادرة","Check Out"],["تعديل","Edit"],["تعديل المغادرة","Change Checkout"],["طباعة إيصال","Print Voucher"],["حذف","Delete"],["إغلاق","Close"],["الغرفة متاحة","Room is available"],["حجز الغرفة","Book Room"],["تأكيد تسجيل المغادرة؟","Confirm checkout?"],["خطأ في تسجيل المغادرة","Checkout failed"],["متأخر ⚠️","Overdue ⚠️"],["متأخر","Overdue"],["تفاصيل","Details"],["المجموعة","Group"],["مغادرة","Checkout"],["حذف نهائي","Permanent Delete"],["اختر الرحلة...","Choose a trip..."],["أخرى (اكتب اسم مختلف)","Other (enter a different name)"],["اسم الرحلة (اكتب هنا)","Trip Name (enter here)"],["اكتب اسم الرحلة","Enter trip name"],["تاريخ الرحلة","Trip Date"],["كل الأنواع","All Room Types"],["كل الإطلالات","All Views"],["لا توجد غرف مطابقة","No matching rooms"],["(مشغولة)","(Occupied)"],["(محجوز في الحجز)","(Selected in this booking)"],["نوع الغرفة *","Room Type *"],["فلتر الإطلالة","View Filter"],["رقم الغرفة *","Room Number *"],["الإطلالة","View"],["نوع الإقامة *","Board Type *"],["رحلات خارجية (اختياري)","External Trips (Optional)"],["إضافة رحلة","Add Trip"],["نزيل الغرفة الأولى = المسؤول","First-room guest = responsible person"],["مسؤول الغرفة","Room Responsible Person"],["اختياري","Optional"],["رقم الهاتف","Phone Number"],["يرجى تحديد التواريخ","Please select the dates"],["تاريخ المغادرة يجب أن يكون بعد الوصول","Checkout date must be after check-in"],["يرجى إضافة غرفة على الأقل","Please add at least one room"],["يرجى إدخال اسم المسؤول الخارجي","Please enter the external responsible person's name"],["عند حجز أكثر من غرفة يجب تحديد مسؤول خارجي","An external responsible person is required when booking multiple rooms"],["يرجى اختيار رقم الغرفة","Please select a room number"],["لا يمكن اختيار نفس الغرفة مرتين","The same room cannot be selected twice"],["جارٍ الحفظ...","Saving..."],["خطأ في حفظ الحجز — ","Booking save error — "],["بيانات الحجز","Booking Details"],["تاريخ مغادرة","Checkout Date"],["عدد ليالي","Number of Nights"],["الليالي","Nights"],["المسؤول الخارجي","External Responsible Person"],["النزيل الأول — مسؤول الغرفة","First Guest — Room Responsible Person"],["حفظ التعديلات","Save Changes"],["تواريخ غير صحيحة","Invalid dates"],["أدخل عدد الليالي","Enter number of nights"],["يرجى إدخال اسم النزيل","Please enter the guest name"],["يرجى التحقق من التواريخ","Please verify the dates"],["تم حفظ التعديلات","Changes saved"],["خطأ في الحفظ","Save error"],["اختر الغرفة","Select room"],["نوع الإقامة","Board Type"],["هيتم تحويل الحجز لحجز جماعي وإضافة الغرفة الجديدة بنفس تواريخ الإقامة","The booking will be converted to a group booking and the new room will use the same stay dates"],["هتتضاف الغرفة الجديدة لنفس المجموعة، بنفس تواريخ الإقامة","The new room will be added to the same group with the same stay dates"],["يرجى إدخال اسم النزيل الأول","Please enter the first guest's name"],["إضافة الغرفة","Add Room"],["اختر التاريخ الجديد","Select the new date"],["لم يتغير التاريخ","The date has not changed"],["التاريخ يجب أن يكون بعد الوصول","The date must be after check-in"],["تاريخ غير صحيح","Invalid date"],["لا توجد حجوزات في هذه المجموعة","No bookings found in this group"],["عدد الغرف","Number of Rooms"],["إجمالي المبلغ","Total Amount"],["غرف نشطة","Active Rooms"],["طباعة وصل المجموعة","Print Group Voucher"],["حذف المجموعة كاملة","Delete Entire Group"],["تسجيل مغادرة هذه الغرفة؟","Check out this room?"],["خطأ","Error"],["مدير","Administrator"],["موظف","Staff"],["يرجى إدخال اسم المستخدم وكلمة المرور","Please enter username and password"],["خطأ — قد يكون اسم المستخدم مكرراً","Error — the username may already exist"],["خطأ في الحذف","Delete error"],["المسؤول:","Responsible person:"],["طباعة","Print"],["غرفة","Room"],["النزلاء","Guests"],["النوع","Type"],["نوع الإقامة","Board Type"],["وصول","Check-in"],["مغادرة","Checkout"],["لا يوجد بيانات","No data available"],["النزيل الرئيسي","Primary Guest"],["رقم المجموعة","Group Number"],["إقامة بالفطار","Bed & Breakfast"],["نصف إقامة (فطار وعشاء)","Half Board (Breakfast & Dinner)"],["إقامة كاملة (فطار وغداء وعشاء)","Full Board (Breakfast, Lunch & Dinner)"],["إقامة بالفطار (Bed & Breakfast)","Bed & Breakfast"],["نصف إقامة — فطار وعشاء (Half Board)","Half Board (Breakfast & Dinner)"],["إقامة كاملة — فطار وغداء وعشاء (Full Board)","Full Board (Breakfast, Lunch & Dinner)"],["إطلالة بحر","Sea View"],["مواجهة بحر","Sea Side"],["حديقة","Garden View"],["إطلالة مسبح","Pool View"],["حفلة وادي استار في الطويلات","Wadi Star Party in Al-Tawilat"],["حفلة وادي القمر في الطويلات","Wadi Al-Qamar Party in Al-Tawilat"],["رحلة البلوهول وأبوجالوم والبلولاجون","Blue Hole, Abu Galum & Blue Lagoon Trip"],["رحلة محمية الثري بولز وسفاري البيتش باجي لوادي جني","Three Pools Reserve & Beach Buggy Safari to Wadi Gnai"],["سفاري بيتش باجي بانوراما دهب والطويلات","Beach Buggy Safari — Dahab Panorama & Al-Tawilat"],["الرحلة البحرية باليخت (صباحي)","Morning Yacht Trip"],["الرحلة البحرية باليخت (مسائي)","Evening Yacht Trip"],["حفلة جبل الطويلات خيمة الطباخ","Al-Tawilat Mountain Party — Al-Tabbakh Tent"],["حفلة جبل الطويلات واحة زين","Al-Tawilat Mountain Party — Zain Oasis"],["رحلة الغواصة","Submarine Trip"],["داي يوز شرم الشيخ كافيه فرشة والسوق القديم","Sharm El-Sheikh Day Use — Farsha Cafe & Old Market"],["رحلة وادي الوشواش وراس شطان","Wadi Al-Weshwash & Ras Shitan Trip"],["رحلة سانت كاترين وجبل موسى","Saint Catherine & Mount Moses Trip"]];
 function getStoredLanguage(){try{return localStorage.getItem('dahab_bay_language')==='en'?'en':'ar';}catch(e){return 'ar';}}
 let currentLang=getStoredLanguage();
 let i18nApplying=false;
@@ -195,6 +240,7 @@ function updateLanguageImages(root=document){
   root.querySelectorAll?.('source[data-srcset-ar][data-srcset-en]').forEach(source=>{source.srcset=currentLang==='ar'?source.dataset.srcsetAr:source.dataset.srcsetEn;});
 }
 function applyTranslations(root=document){
+  applyKeyTranslations(root);
   const base=root.nodeType===Node.TEXT_NODE?root:(root.body||root);
   if(base.nodeType===Node.TEXT_NODE)translateTextNode(base);
   else{
@@ -219,7 +265,7 @@ function setLanguage(lang,persist=true){
   document.documentElement.dir=currentLang==='ar'?'rtl':'ltr';
   document.body.dir=document.documentElement.dir;
   document.title=bi('نظام حجوزات فندق دهب باي','Dahab Bay Hotel Reservation System');
-  updateLanguageToggles();updateCurrentDate();applyTranslations(document);
+  updateLanguageToggles();updateCurrentDate();applyTranslations(document);if(currentUser){const sidebarRole=document.getElementById('sidebar-user-role');if(sidebarRole)sidebarRole.textContent=isAdmin()?t('users.admin'):t('users.staff');}updatePageHeading(document.querySelector('.page.active')?.id?.replace('page-','')||'dashboard');
 }
 function toggleLanguage(){setLanguage(currentLang==='ar'?'en':'ar');}
 
@@ -309,7 +355,7 @@ async function loadBookings(){
     const data=await rpc('api_list_bookings');
     bookings=(Array.isArray(data)?data:[]).map(normalizeBooking);
   }catch(e){
-    safeErrorMessage(e,'تعذر تحميل الحجوزات');
+    safeErrorMessage(e,t('booking.load_failed'));
     if(e?.status===401)await doLogout();
     throw e;
   }
@@ -323,7 +369,10 @@ async function initializeAuthenticatedApp(profile){
   updateCurrentDate();
   const ub=document.getElementById('user-badge');
   ub.textContent=currentUser.fullname||currentUser.username;
-  ub.style.cssText=`font-size:12px;font-weight:700;padding:6px 12px;border-radius:8px;background:${isAdmin()?'#E6F1FB':'#EAF3DE'};color:${isAdmin()?'#185FA5':'#3B6D11'}`;
+  ub.style.cssText=`font-size:11px;font-weight:750;padding:8px 11px;border-radius:20px;background:${isAdmin()?'#e2eeee':'#e6f4ec'};color:${isAdmin()?'#195d62':'#277052'}`;
+  const sidebarName=document.getElementById('sidebar-user-name');if(sidebarName)sidebarName.textContent=currentUser.fullname||currentUser.username;
+  const sidebarRole=document.getElementById('sidebar-user-role');if(sidebarRole)sidebarRole.textContent=isAdmin()?t('users.admin'):t('users.staff');
+  const sidebarAvatar=document.getElementById('sidebar-avatar');if(sidebarAvatar){const value=(currentUser.fullname||currentUser.username||'DB').trim().split(/\s+/).map(x=>x[0]).join('').slice(0,2).toUpperCase();sidebarAvatar.textContent=value||'DB';}
   document.getElementById('nav-users').style.display=isAdmin()?'':'none';
   const exportBtn=document.getElementById('export-excel-btn');
   if(exportBtn)exportBtn.style.display=isAdmin()?'':'none';
@@ -337,8 +386,8 @@ async function doLogin(){
   const err=document.getElementById('login-error');
   const btn=document.getElementById('login-btn');
   err.classList.remove('show');
-  if(!/^[a-z0-9._-]{3,40}$/.test(u)||!p){err.textContent='اسم المستخدم أو كلمة المرور غير صحيحة';err.classList.add('show');return;}
-  btn.innerHTML='<span class="spinner"></span> جارٍ التحقق...';btn.disabled=true;
+  if(!/^[a-z0-9._-]{3,40}$/.test(u)||!p){err.textContent=t('auth.invalid');err.classList.add('show');return;}
+  btn.innerHTML='<span class="spinner"></span> '+h(t('auth.checking'));btn.disabled=true;
   try{
     await signInWithPassword(u,p);
     const profile=await rpc('api_my_profile');
@@ -346,10 +395,10 @@ async function doLogin(){
     document.getElementById('login-password').value='';
   }catch(e){
     saveSession(null);currentUser=null;
-    err.textContent='اسم المستخدم أو كلمة المرور غير صحيحة';
+    err.textContent=t('auth.invalid');
     err.classList.add('show');
   }finally{
-    btn.innerHTML='<i class="ti ti-login"></i> دخول';btn.disabled=false;
+    btn.innerHTML='<i class="ti ti-login"></i> '+h(t('auth.login'));btn.disabled=false;
   }
 }
 
@@ -383,6 +432,7 @@ function showPage(name){
   page.classList.add('active');
   const idx={'dashboard':0,'new-booking':1,'bookings':2,'rooms':3,'status':4,'trips':5,'users':6};
   document.querySelectorAll('.nav-btn')[idx[name]]?.classList.add('active');
+  updatePageHeading(name);closeSidebar();
   if(name==='dashboard')loadBookings().then(renderDashboard).catch(()=>{});
   else if(name==='bookings')loadBookings().then(renderBookings).catch(()=>{});
   else if(name==='rooms')loadBookings().then(renderRooms).catch(()=>{});
@@ -402,6 +452,9 @@ function renderDashboard(){
   document.getElementById('stat-available').textContent=40-occupied;
   document.getElementById('stat-checkout').textContent=checkoutToday.length;
   document.getElementById('stat-guests').textContent=totalGuests;
+  const arrivals=document.getElementById('hero-arrivals');if(arrivals)arrivals.textContent=bookings.filter(b=>b.checkin===td&&b.status!=='done').length;
+  const departures=document.getElementById('hero-departures');if(departures)departures.textContent=checkoutToday.length;
+  const occupancy=document.getElementById('hero-occupancy');if(occupancy)occupancy.textContent=Math.round((occupied/40)*100)+'%';
   const al=document.getElementById('checkout-alert');
   if(checkoutToday.length){al.textContent=`تنبيه: ${checkoutToday.length} غرفة مغادرتها اليوم`;al.classList.add('show');}
   else al.classList.remove('show');
@@ -1038,7 +1091,7 @@ async function addBooking(){
   }
 
   const btn=document.getElementById('add-booking-btn');
-  btn.innerHTML='<span class="spinner"></span> جارٍ الحفظ...';btn.disabled=true;
+  btn.innerHTML='<span class="spinner"></span> '+h(t('common.saving'));btn.disabled=true;
   try{
     const created=await rpc('api_create_bookings',{p_rows:payloads});
     const newRows=(Array.isArray(created)?created:[]).map(normalizeBooking);
@@ -1245,7 +1298,7 @@ async function saveEditBooking(id){
     safeErrorMessage(e);
     errEl.textContent=e?.code==='ROOM_CONFLICT'?'تعارض مع حجز آخر في نفس الغرفة':e?.code==='VERSION_CONFLICT'?'تم تعديل الحجز بواسطة مستخدم آخر. أعد تحميل الصفحة.':'تعذر حفظ التعديلات';
     errEl.classList.add('show');
-  }finally{btn.innerHTML='<i class="ti ti-check"></i> حفظ التعديلات';btn.disabled=false;}
+  }finally{btn.innerHTML='<i class="ti ti-check"></i> '+h(t('common.save_changes'));btn.disabled=false;}
 }
 function closeEditModal(){document.getElementById('edit-modal').classList.remove('open');}
 
@@ -1339,7 +1392,7 @@ async function confirmAddGroupRoom(){
     amount:document.getElementById('agr-amount').value?Number(document.getElementById('agr-amount').value):null,
     notes:'',guests,trips:[]
   };
-  const btn=document.getElementById('agr-confirm-btn');btn.innerHTML='<span class="spinner"></span> جارٍ الحفظ...';btn.disabled=true;
+  const btn=document.getElementById('agr-confirm-btn');btn.innerHTML='<span class="spinner"></span> '+h(t('common.saving'));btn.disabled=true;
   try{
     const result=await rpc('api_add_group_room',{p_base_id:b.id,p_row:payload});
     await loadBookings();
@@ -1500,7 +1553,7 @@ async function renderUsers(){
   try{
     const result=await edgeAdmin('list');
     const users=Array.isArray(result?.users)?result.users:[];
-    if(!users.length){list.innerHTML='<div class="empty-state">لا يوجد مستخدمون</div>';return;}
+    if(!users.length){list.innerHTML='<div class="empty-state">'+h(t('users.none'))+'</div>';return;}
     for(const user of users){
       const row=document.createElement('div');
       row.style.cssText='display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #f0f0ea;font-size:13px;gap:10px';
@@ -1509,18 +1562,18 @@ async function renderUsers(){
       const username=document.createElement('span');username.style.cssText='color:#888;font-size:11px';username.textContent=` (${user.username})`;
       info.append(name,username);
       const actions=document.createElement('div');actions.style.cssText='display:flex;align-items:center;gap:8px';
-      const role=document.createElement('span');role.style.cssText=`font-size:11px;color:${user.role==='admin'?'#185FA5':'#3B6D11'}`;role.textContent=user.role==='admin'?'مدير':'موظف';
-      const edit=document.createElement('button');edit.className='action-btn';edit.title='تعديل';edit.innerHTML='<i class="ti ti-edit" style="color:#0F6E56"></i>';edit.addEventListener('click',()=>openEditUserModal(user));
+      const role=document.createElement('span');role.style.cssText=`font-size:11px;color:${user.role==='admin'?'#185FA5':'#3B6D11'}`;role.textContent=user.role==='admin'?t('users.admin'):t('users.staff');
+      const edit=document.createElement('button');edit.className='action-btn';edit.title=t('users.edit');edit.innerHTML='<i class="ti ti-edit" style="color:#0F6E56"></i>';edit.addEventListener('click',()=>openEditUserModal(user));
       actions.append(role,edit);
       if(user.auth_user_id!==currentUser.auth_user_id){
-        const del=document.createElement('button');del.className='action-btn';del.title='حذف';del.innerHTML='<i class="ti ti-trash" style="color:#CC2200"></i>';del.addEventListener('click',()=>deleteUser(user.auth_user_id,user.username));
+        const del=document.createElement('button');del.className='action-btn';del.title=t('common.permanent_delete');del.innerHTML='<i class="ti ti-trash" style="color:#CC2200"></i>';del.addEventListener('click',()=>deleteUser(user.auth_user_id,user.username));
         actions.append(del);
       }
       row.append(info,actions);list.appendChild(row);
     }
   }catch(e){
     safeErrorMessage(e);
-    list.innerHTML='<div class="empty-state">تعذر تحميل المستخدمين</div>';
+    list.innerHTML='<div class="empty-state">'+h(t('users.load_failed'))+'</div>';
   }
 }
 async function addUser(){
@@ -1531,17 +1584,17 @@ async function addUser(){
   const role=document.getElementById('nu-role').value;
   const errEl=document.getElementById('add-user-error');const sucEl=document.getElementById('add-user-success');
   errEl.classList.remove('show');sucEl.classList.remove('show');
-  if(!/^[a-z0-9._-]{3,40}$/.test(username)){errEl.textContent='اسم المستخدم يجب أن يحتوي على أحرف إنجليزية صغيرة أو أرقام أو . _ -';errEl.classList.add('show');return;}
-  if(!fullname){errEl.textContent='يرجى إدخال الاسم الكامل';errEl.classList.add('show');return;}
-  if(!PASSWORD_POLICY.test(password)){errEl.textContent='كلمة المرور لا تطابق متطلبات الأمان';errEl.classList.add('show');return;}
+  if(!/^[a-z0-9._-]{3,40}$/.test(username)){errEl.textContent=t('users.username_rule');errEl.classList.add('show');return;}
+  if(!fullname){errEl.textContent=t('users.fullname_required_error');errEl.classList.add('show');return;}
+  if(!PASSWORD_POLICY.test(password)){errEl.textContent=t('users.password_policy_error');errEl.classList.add('show');return;}
   try{
     await edgeAdmin('create',{username,fullname,password,role});
-    sucEl.textContent=`تم إضافة "${username}" بنجاح`;sucEl.classList.add('show');
+    sucEl.textContent=t('users.added',{username});sucEl.classList.add('show');
     document.getElementById('nu-username').value='';document.getElementById('nu-fullname').value='';document.getElementById('nu-password').value='';document.getElementById('nu-role').value='staff';
     await renderUsers();
   }catch(e){
     safeErrorMessage(e);
-    errEl.textContent=e?.code==='USERNAME_EXISTS'?'اسم المستخدم موجود بالفعل':'تعذر إضافة المستخدم';
+    errEl.textContent=e?.code==='USERNAME_EXISTS'?t('users.username_exists'):t('users.add_failed');
     errEl.classList.add('show');
   }
 }
@@ -1553,7 +1606,7 @@ function openEditUserModal(user){
   document.getElementById('eu-role').value=user.role==='admin'?'admin':'staff';
   document.getElementById('eu-password').value='';
   document.getElementById('eu-password-confirm').value='';
-  document.getElementById('edit-user-title').textContent=`تعديل المستخدم — ${user.username}`;
+  document.getElementById('edit-user-title').textContent=t('users.edit_title',{username:user.username});
   document.getElementById('edit-user-error').classList.remove('show');
   document.getElementById('edit-user-success').classList.remove('show');
   document.getElementById('edit-user-modal').classList.add('open');
@@ -1568,37 +1621,37 @@ async function saveEditUser(){
   const passwordConfirm=document.getElementById('eu-password-confirm').value;
   const err=document.getElementById('edit-user-error');const suc=document.getElementById('edit-user-success');
   err.classList.remove('show');suc.classList.remove('show');
-  if(!fullname){err.textContent='يرجى إدخال الاسم الكامل';err.classList.add('show');return;}
+  if(!fullname){err.textContent=t('users.fullname_required_error');err.classList.add('show');return;}
   if(password||passwordConfirm){
-    if(password!==passwordConfirm){err.textContent='كلمتا المرور غير متطابقتين';err.classList.add('show');return;}
-    if(!PASSWORD_POLICY.test(password)){err.textContent='كلمة المرور لا تطابق متطلبات الأمان';err.classList.add('show');return;}
+    if(password!==passwordConfirm){err.textContent=t('users.password_mismatch');err.classList.add('show');return;}
+    if(!PASSWORD_POLICY.test(password)){err.textContent=t('users.password_policy_error');err.classList.add('show');return;}
   }
-  const btn=document.getElementById('edit-user-save-btn');btn.disabled=true;btn.innerHTML='<span class="spinner"></span> جارٍ الحفظ...';
+  const btn=document.getElementById('edit-user-save-btn');btn.disabled=true;btn.innerHTML='<span class="spinner"></span> '+h(t('common.saving'));
   try{
     await edgeAdmin('update',{auth_user_id:authUserId,fullname,role,password:password||undefined});
-    suc.textContent='تم حفظ التعديلات';suc.classList.add('show');
+    suc.textContent=t('common.changes_saved');suc.classList.add('show');
     if(authUserId===currentUser.auth_user_id){
       currentUser=await rpc('api_my_profile');
       document.getElementById('user-badge').textContent=currentUser.fullname||currentUser.username;
     }
     await renderUsers();
     if(authUserId===currentUser.auth_user_id&&password){
-      alert('تم تغيير كلمة المرور. يرجى تسجيل الدخول مرة أخرى.');
+      alert(t('users.password_changed'));
       await doLogout();
       return;
     }
     setTimeout(closeEditUserModal,900);
   }catch(e){
     safeErrorMessage(e);
-    err.textContent=e?.code==='LAST_ADMIN'?'لا يمكن إزالة آخر مدير':e?.code==='SELF_DEMOTION'?'لا يمكن للمدير تخفيض دوره بنفسه':'تعذر حفظ التعديلات';
+    err.textContent=e?.code==='LAST_ADMIN'?t('users.last_admin_demote'):e?.code==='SELF_DEMOTION'?t('users.self_demotion'):t('users.save_failed');
     err.classList.add('show');
-  }finally{btn.disabled=false;btn.innerHTML='<i class="ti ti-check"></i> حفظ التعديلات';}
+  }finally{btn.disabled=false;btn.innerHTML='<i class="ti ti-check"></i> '+h(t('common.save_changes'));}
 }
 async function deleteUser(authUserId,username){
   if(!requireAdmin())return;
-  if(!confirm(`حذف المستخدم "${username}"؟`))return;
+  if(!confirm(t('users.delete_confirm',{username})))return;
   try{await edgeAdmin('delete',{auth_user_id:authUserId});await renderUsers();}
-  catch(e){safeErrorMessage(e);alert(e?.code==='LAST_ADMIN'?'لا يمكن حذف آخر مدير':'خطأ في الحذف');}
+  catch(e){safeErrorMessage(e);alert(e?.code==='LAST_ADMIN'?t('users.last_admin_delete'):t('users.delete_failed'));}
 }
 
 // ========== طباعة الإيصال ==========
@@ -1879,7 +1932,7 @@ function exportExcel(){
 }
 
 const ACTION_HANDLERS=Object.freeze({
-  toggleLanguage,doLogin,doLogout,showPage,setDateMode,onDatesChange,onNightsInput,onRespTypeChange,
+  toggleLanguage,toggleSidebar,doLogin,doLogout,showPage,setDateMode,onDatesChange,onNightsInput,onRespTypeChange,
   addRoomRow,addBooking,clearForm,renderBookings,exportExcel,renderTrips,closeModal,openEditModal,
   openExtendModal,printVoucher,printGroupVoucher,confirmPermanentDelete,showTripsForRoom,showRoomDetails,
   viewGroup,checkoutBooking,addTripRow,onTripNameChange,removeTripRow,onRoomTypeChange,onRoomViewFilterChange,

@@ -896,6 +896,8 @@ revoke all on public.audit_log from anon, authenticated;
 revoke all on all sequences in schema public from anon, authenticated;
 
 -- Edge Functions use the server-only service role for administrator operations.
+GRANT USAGE ON SCHEMA public TO service_role;
+
 grant select, insert, update, delete on public.profiles to service_role;
 grant select, insert, update, delete on public.booking_records to service_role;
 grant select, insert, update, delete on public.audit_log to service_role;
